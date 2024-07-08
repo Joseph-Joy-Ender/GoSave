@@ -1,2 +1,4 @@
-package com.gosave.gosave.services;public class AppUserService {
+package com.gosave.gosave.services;
+
+public interface AppUserService {
 }

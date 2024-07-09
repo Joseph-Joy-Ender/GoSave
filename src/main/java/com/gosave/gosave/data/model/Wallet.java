@@ -18,4 +18,7 @@ public class Wallet {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private BigDecimal balance;
+    private Duration duration;
+    private TimePeriod timePeriod;
+    private BigDecimal amount;
 }

@@ -6,6 +6,8 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -18,6 +20,7 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private BigDecimal amount;
 
 
 }

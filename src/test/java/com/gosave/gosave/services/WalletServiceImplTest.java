@@ -6,9 +6,11 @@ import com.gosave.gosave.dto.request.AddMoneyRequest;
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.TransferResponse;
 import com.gosave.gosave.exception.WalletNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
+@Slf4j
 class WalletServiceImplTest {
     @Autowired
     private WalletService walletService;
@@ -36,11 +39,11 @@ class WalletServiceImplTest {
     }
 
     @Test
+    @Sql("/scripts/scripts.sql")
     public void testWalletBalanceAfterReceivingMoney()  {
-        WalletRequest walletRequest = new WalletRequest();
-        Optional<Wallet> foundWallet = walletRepository.findById(walletRequest.getId());
-        assertNotNull(foundWallet);
-
+       BigDecimal balance = walletService.getBalance(301L);
+       log.info("res-->{}", balance);
+        assertNotNull(balance);
     }
 
 }

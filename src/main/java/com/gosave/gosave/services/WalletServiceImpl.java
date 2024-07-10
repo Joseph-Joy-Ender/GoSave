@@ -24,34 +24,28 @@ public class WalletServiceImpl implements WalletService {
 
     @Autowired
     private final BankAccountRepository bankAccountRepository;
-
+    @Autowired
+    private AppUserServiceImpl appUserServiceImpl;
 
 
     @Override
     public TransferResponse addMoneyToWalletFromBank(AddMoneyRequest addMoneyRequest) {
-        Optional<Wallet> foundWallet = walletRepository.findById(addMoneyRequest.getId());
+        if(walletRepository.existsById(addMoneyRequest.getId())) throw new RuntimeException("\"wallet with id\" +walletRepository.findById(addMoneyRequest.getId())+ \"does not exist\" ");
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setAccountNumber(addMoneyRequest.getAccountNumber());
+        bankAccount.setBalance(addMoneyRequest.getAmount());
+        bankAccount.setBankName(addMoneyRequest.getBankName());
+        bankAccount.setId(addMoneyRequest.getId());
+        BankAccount savedBankAcc = bankAccountRepository.save(bankAccount);
         TransferResponse transferResponse = new TransferResponse();
-        if(!foundWallet.isPresent()) {
-            BankAccount bankAccount = new BankAccount();
-            bankAccount.setAccountNumber(addMoneyRequest.getAccountNumber());
-            bankAccount.setBalance(addMoneyRequest.getAmount());
-            bankAccount.setBankName(addMoneyRequest.getBankName());
-            bankAccount.setId(addMoneyRequest.getId());
-            bankAccountRepository.save(bankAccount);
-            transferResponse.setId(foundWallet.get().getId());
-
-
-        }else{
-            throw new WalletNotFoundException("wallet with id" +walletRepository.findById(addMoneyRequest.getId())+ "does not exist");
-        }
+        transferResponse.setId(savedBankAcc.getId());
 
         return transferResponse;
     }
 
     @Override
     public BigDecimal getBalance(Long walletId) {
-        Optional<Wallet> foundWallet = walletRepository.findById(walletId);
-        BigDecimal balance = foundWallet.get().getBalance();
+        BigDecimal balance = walletRepository.findById(walletId).get().getBalance();
         return balance;
     }
 

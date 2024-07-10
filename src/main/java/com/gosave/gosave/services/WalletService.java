@@ -7,7 +7,7 @@ import com.gosave.gosave.dto.response.WalletResponse;
 
 import java.math.BigDecimal;
 
-public interface WalletService {
+public interface   WalletService {
 
     TransferResponse addMoneyToWalletFromBank(AddMoneyRequest addMoneyRequest);
 

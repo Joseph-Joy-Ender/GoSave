@@ -10,7 +10,7 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @ToString
-public class KudaTransactionDetails {
+public class PaystackTransactionDetails {
     @JsonProperty("authorization_url")
     private String authorizationUrl;
     @JsonProperty("access_code")

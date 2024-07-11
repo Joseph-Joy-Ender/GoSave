@@ -1,9 +1,7 @@
 package com.gosave.gosave.services;
 
-import com.gosave.gosave.data.model.Wallet;
 import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
-import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.TransferResponse;
 import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.extern.slf4j.Slf4j;

@@ -28,11 +28,15 @@ class AppUserServiceImplTest {
    private AppUserServiceImpl appUserServiceImpl;
 
     @Test
-    public void testDurationFunctionality(){
+    public void testDurationFunctionality() {
         Duration daily = Duration.DAILY;
-        long  duration= appUserServiceImpl.saveFundDuration(daily);
-      System.out.println(duration);
+        long duration = appUserServiceImpl.saveFundDuration(daily);
+        System.out.println(duration);
     }
+    private PaymentService paymentService;
+
+
+
 
     @Test
     public  void  testTime_Functionality() throws WalletExistException {

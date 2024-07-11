@@ -12,7 +12,6 @@ import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.InitializeTransactionRequest;
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
-import com.gosave.gosave.dto.response.PayStackTransactionResponse;
 import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletExistException;
 import lombok.AllArgsConstructor;
@@ -20,9 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.time.LocalTime;
@@ -34,7 +30,6 @@ public class AppUserServiceImpl implements AppUserService {
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
     private final BeanConfig beanConfig;
-
 
     @Override
     public SaveResponse saveFund(SaveRequest saveRequest) {
@@ -90,24 +85,27 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public ApiResponse<?> transferFundsToWallet(Long userId) {
-        RestTemplate restTemplate = new RestTemplate();
-        Optional<User> foundUser = userRepository.findById(userId);
-        HttpEntity<InitializeTransactionRequest> request = buildPaymentRequest(foundUser);
-        ResponseEntity<PayStackTransactionResponse> response =
-                restTemplate.postForEntity(beanConfig.getPaystackBaseUrl(), request, PayStackTransactionResponse.class);
-        return new ApiResponse<>(response.getBody());
+        return null;
     }
 
+   
+
+
     private HttpEntity<InitializeTransactionRequest> buildPaymentRequest(Optional<User> foundUser) {
+        return getInitializeTransactionRequestHttpEntity(foundUser, beanConfig);
+
+    }
+
+    static HttpEntity<InitializeTransactionRequest> getInitializeTransactionRequestHttpEntity(Optional<User> foundUser, BeanConfig beanConfig) {
         InitializeTransactionRequest transactionRequest = new InitializeTransactionRequest();
         transactionRequest.setEmail(foundUser.get().getEmail());
         transactionRequest.setAmount(foundUser.get().getAmount());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+beanConfig.getPaystackApiKey());
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+ beanConfig.getPaystackApiKey());
         return new HttpEntity<>(transactionRequest, headers);
-
     }
+
 }
 
 

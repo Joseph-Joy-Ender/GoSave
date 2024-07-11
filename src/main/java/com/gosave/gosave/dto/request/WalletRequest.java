@@ -11,5 +11,4 @@ import java.math.BigDecimal;
 public class WalletRequest {
     private Long id;
     private BigDecimal balance;
-    private Transaction transaction;
 }

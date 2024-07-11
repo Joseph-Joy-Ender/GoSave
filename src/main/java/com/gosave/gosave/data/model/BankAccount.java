@@ -2,29 +2,28 @@ package com.gosave.gosave.data.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity
-@Setter
 @Getter
-public class User {
+@Setter
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+public class BankAccount {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    private String username;
-    private String password;
-    private String email;
-    private BigDecimal amount;
-
-    @OneToOne
-    private Wallet wallet;
-
+    private String bankName;
+    private String accountNumber;
+    private BigDecimal balance;
 
 }

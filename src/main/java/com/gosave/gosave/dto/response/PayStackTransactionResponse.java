@@ -14,5 +14,5 @@ public class PayStackTransactionResponse {
     private boolean status;
     private String message;
     @JsonProperty("data")
-    private KudaTransactionDetails kudaTransactionDetails;
+    private PaystackTransactionDetails paystackTransactionDetails;
 }

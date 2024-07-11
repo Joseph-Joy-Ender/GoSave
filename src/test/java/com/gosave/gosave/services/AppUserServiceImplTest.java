@@ -3,6 +3,7 @@ package com.gosave.gosave.services;
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.WalletResponse;
+import com.gosave.gosave.exception.UserNotFoundException;
 import com.gosave.gosave.exception.WalletExistException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AppUserServiceImplTest {
     @Autowired
     private AppUserService appUserService;
+    @Autowired
+    private PaymentService paymentService;
 
 
     @Test
     @Sql("/scripts/scripts.sql")
-    public void testThatWalletCanSendMoneyMoneyTo() {
-        ApiResponse<?> response = appUserService.transferFundsToWallet(201L);
+    public void testThatWalletCanSendMoneyMoneyTo() throws UserNotFoundException {
+        ApiResponse<?> response = paymentService.transferFundsToWallet(201L);
         log.info("res-->{}", response);
         assertThat(response).isNotNull();
     }

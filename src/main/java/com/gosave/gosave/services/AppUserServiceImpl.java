@@ -22,6 +22,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.time.LocalTime;
 @Service
@@ -48,9 +50,25 @@ public class AppUserServiceImpl implements AppUserService {
             default -> throw new IllegalArgumentException("Unknown duration: " + duration);
         };
     }
+    private static long calculateInitialDelay(TimeRequest timeRequest) {
+        LocalDateTime now = java.time.LocalDateTime.now();
+        LocalDateTime nextExecution = now.withHour(timeRequest.getHour()).withMinute(timeRequest.getMinutes());
+        // If the next execution time is in the past, add one day
+        if (now.compareTo(nextExecution) > 0) {
+            nextExecution = nextExecution.plusDays(1);
+        }
+
+        // Calculate the delay in milliseconds
+        java.time.Duration duration = java.time.Duration.between(now, nextExecution);
+        return duration.toMillis();
+    }
 
     public LocalTime saveFundTimePeriod(TimeRequest timeRequest){
         return LocalTime.of(timeRequest.getHour(), timeRequest.getMinutes());
+    }
+
+    public void withdrawFund (){
+        
     }
 
 

@@ -47,6 +47,7 @@ class AppUserServiceImplTest {
         public void testThatWalletCanSendMoneyMoneyTo () {
             ApiResponse<?> response = appUserService.transferFundsToWallet(201L);
             log.info("res-->{}", response);
+            System.out.println(response.getData());
             assertThat(response).isNotNull();
         }
         @Test

@@ -1,24 +1,30 @@
 package com.gosave.gosave.services;
 
 
-import com.gosave.gosave.controller.BeanConfig;
+import com.gosave.gosave.config.BeanConfig;
 import com.gosave.gosave.data.model.User;
 import com.gosave.gosave.data.model.Wallet;
 import com.gosave.gosave.data.repositories.UserRepository;
 import com.gosave.gosave.data.repositories.WalletRepository;
+import com.gosave.gosave.dto.request.CreateAccountRequest;
 import com.gosave.gosave.dto.request.InitializeTransactionRequest;
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
+import com.gosave.gosave.dto.response.CreateAccountResponse;
 import com.gosave.gosave.dto.response.PayStackTransactionResponse;
 import com.gosave.gosave.dto.response.WalletResponse;
+import com.gosave.gosave.exception.UserException;
 import com.gosave.gosave.exception.WalletExistException;
+import com.gosave.gosave.utils.GenerateApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,6 +39,9 @@ public class AppUserServiceImpl implements AppUserService {
     @Autowired
     private final UserRepository userRepository;
     private final BeanConfig beanConfig;
+    private final ModelMapper mapper = new ModelMapper();
+    private PasswordEncoder passwordEncoder;
+
 
 
     @Override
@@ -59,6 +68,15 @@ public class AppUserServiceImpl implements AppUserService {
         ResponseEntity<PayStackTransactionResponse> response =
                 restTemplate.postForEntity(beanConfig.getPaystackBaseUrl(), request, PayStackTransactionResponse.class);
         return new ApiResponse<>(response.getBody());
+    }
+
+    @Override
+    public CreateAccountResponse createAccount(CreateAccountRequest accountRequest) throws UserException {
+        if (userRepository.existsByEmail(accountRequest.getEmail())) throw new UserException(GenerateApiResponse.ACCOUNT_WITH_THIS_EMAIL_ALREADY_EXIST);
+        User user = mapper.map(accountRequest, User.class);
+        user.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
+        userRepository.save(user);
+        return GenerateApiResponse.create(GenerateApiResponse.REGISTER_SUCCESSFUL);
     }
 
     private HttpEntity<InitializeTransactionRequest> buildPaymentRequest(Optional<User> foundUser) {

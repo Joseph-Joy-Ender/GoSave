@@ -18,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
+import static com.gosave.gosave.services.AppUserServiceImpl.getInitializeTransactionRequestHttpEntity;
+
 @AllArgsConstructor
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -43,12 +45,6 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private HttpEntity<InitializeTransactionRequest> buildPaymentRequest(Optional<User> foundUser) {
-        InitializeTransactionRequest transactionRequest = new InitializeTransactionRequest();
-        transactionRequest.setEmail(foundUser.get().getEmail());
-        transactionRequest.setAmount(foundUser.get().getAmount());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+beanConfig.getPaystackApiKey());
-        return new HttpEntity<>(transactionRequest, headers);
+        return getInitializeTransactionRequestHttpEntity(foundUser, beanConfig);
     }
 }

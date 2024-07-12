@@ -15,17 +15,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.Optional;
-
-import static com.gosave.gosave.services.AppUserServiceImpl.getInitializeTransactionRequestHttpEntity;
 
 @AllArgsConstructor
 @Service
 public class PaymentServiceImpl implements PaymentService {
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final BeanConfig beanConfig;
 
     @Override
@@ -45,6 +40,12 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private HttpEntity<InitializeTransactionRequest> buildPaymentRequest(Optional<User> foundUser) {
-        return getInitializeTransactionRequestHttpEntity(foundUser, beanConfig);
+        InitializeTransactionRequest transactionRequest = new InitializeTransactionRequest();
+        transactionRequest.setEmail(foundUser.get().getEmail());
+        transactionRequest.setAmount(foundUser.get().getAmount());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+ beanConfig.getPaystackApiKey());
+        return new HttpEntity<>(transactionRequest, headers);
     }
 }

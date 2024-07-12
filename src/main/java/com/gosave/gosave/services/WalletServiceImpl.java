@@ -1,6 +1,7 @@
 package com.gosave.gosave.services;
 
 import com.gosave.gosave.data.model.BankAccount;
+import com.gosave.gosave.data.model.Wallet;
 import com.gosave.gosave.data.repositories.BankAccountRepository;
 import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -42,6 +44,16 @@ public class WalletServiceImpl implements WalletService {
     public BigDecimal getBalance(Long walletId) {
         BigDecimal balance = walletRepository.findById(walletId).get().getBalance();
         return balance;
+    }
+
+    @Override
+    public Optional<Wallet> findWalletById(Long id) {
+        return walletRepository.findById(id);
+    }
+
+    @Override
+    public Wallet save(Wallet wallet) {
+        return walletRepository.save(wallet);
     }
 
 }

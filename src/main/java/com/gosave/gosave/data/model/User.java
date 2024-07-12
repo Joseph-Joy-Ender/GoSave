@@ -1,9 +1,6 @@
 package com.gosave.gosave.data.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +21,7 @@ public class User {
     private BigDecimal amount;
 
     @OneToOne
+    @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
 

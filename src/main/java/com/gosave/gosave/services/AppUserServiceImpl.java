@@ -38,12 +38,8 @@ import java.util.TimerTask;
 @AllArgsConstructor
 @Slf4j
 public class AppUserServiceImpl implements AppUserService {
-    @Autowired
-    private final WalletRepository walletRepository;
     private final WalletService walletService;
     private final UserRepository userRepository;
-    private final BeanConfig beanConfig;
-    private final PaymentServiceImpl paymentServiceImpl;
 
 
 //    @Override

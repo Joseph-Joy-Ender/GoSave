@@ -11,6 +11,10 @@ import java.math.BigDecimal;
 @Getter
 public class SaveRequest {
     private Duration duration;
-    private TimeRequest timeRequest;
+    private int hour;
+    private  int minutes;
     private BigDecimal amount;
+    private String username;
+    private Long  wallet_id;
+
 }

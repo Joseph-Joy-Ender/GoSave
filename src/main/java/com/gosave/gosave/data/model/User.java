@@ -21,7 +21,6 @@ public class User {
     private BigDecimal amount;
 
     @OneToOne
-    @JoinColumn(name = "wallet_id")
     private Wallet wallet;
 
 

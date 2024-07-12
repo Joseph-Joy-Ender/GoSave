@@ -1,5 +1,6 @@
 package com.gosave.gosave.services;
 import com.gosave.gosave.data.model.Duration;
+import com.gosave.gosave.dto.request.SaveRequest;
 import com.gosave.gosave.dto.request.TimeRequest;
 import com.gosave.gosave.exception.UserNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -29,17 +30,17 @@ class AppUserServiceImplTest {
     @Test
     public void testDurationFunctionality() {
         Duration daily = Duration.DAILY;
-        long duration = appUserServiceImpl.saveFundDuration(daily);
+        long duration = appUserServiceImpl.fundDuration(daily);
         System.out.println(duration);
     }
     
 
     @Test
     public  void testInitial_Delay(){
-        TimeRequest timeRequest = new TimeRequest();
-        timeRequest.setHour(1);
-        timeRequest.setMinutes(0);
-        System.out.println(appUserServiceImpl.calculateInitialDelay(timeRequest));
+        SaveRequest saveRequest = new SaveRequest();
+        saveRequest.setHour(1);
+        saveRequest.setMinutes(0);
+        System.out.println(appUserServiceImpl.calculateInitialDelay(saveRequest));
     }
         @Test
         @Sql("/scripts/scripts.sql")
@@ -54,7 +55,7 @@ class AppUserServiceImplTest {
             WalletRequest walletRequest = new WalletRequest();
             walletRequest.setId(100L);
             walletRequest.setBalance(BigDecimal.ZERO);
-//          walletRequest.setTransaction
+//        walletRequest.setTransaction
             WalletResponse walletResponse = appUserService.createWallet(walletRequest);
             assertThat(walletResponse).isNotNull();
 

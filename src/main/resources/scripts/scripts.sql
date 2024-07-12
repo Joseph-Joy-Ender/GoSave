@@ -8,3 +8,6 @@ insert into user(id, username, password, email, amount) values
 
 insert into wallet(id, balance) values
 (101,1000);
+
+insert into wallet(id, balance) values
+    (3,1000);

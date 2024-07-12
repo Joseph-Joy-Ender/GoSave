@@ -10,8 +10,9 @@ import java.time.LocalDateTime;
 @Setter
 public class AddMoneyRequest {
     private Long id;
+    private BigDecimal balance;
     private BigDecimal amount;
     private String bankName;
     private String accountNumber;
-    private LocalDateTime dateTime;
+//    private LocalDateTime dateTime;
 }

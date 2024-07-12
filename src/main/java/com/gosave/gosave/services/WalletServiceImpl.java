@@ -7,6 +7,9 @@ import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.TransferResponse;
+ 
+import com.gosave.gosave.dto.response.WalletResponse;
+
 import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,9 +21,18 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+
+public class    WalletServiceImpl implements WalletService {
+    @Autowired
+
 public class WalletServiceImpl implements WalletService {
+
     private final WalletRepository walletRepository;
     private final BankAccountRepository bankAccountRepository;
+
+    @Autowired
+    private final ModelMapper mapper = new ModelMapper();
+
 
 
 
@@ -40,9 +52,14 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public BigDecimal getBalance(Long walletId) {
-        BigDecimal balance = walletRepository.findById(walletId).get().getBalance();
-        return balance;
+    public WalletResponse getBalance(Long walletId) throws WalletNotFoundException {
+        return mapper.map(findWalletBy(walletId), WalletResponse.class);
+    }
+
+    private Wallet findWalletBy(Long walletId) {
+        return walletRepository.findById(walletId)
+                .orElseThrow(() -> new WalletNotFoundException(
+                        String.format("Customer with id %d not found", walletId)));
     }
 
     @Override
@@ -63,5 +80,6 @@ public class WalletServiceImpl implements WalletService {
         if (foundWallet.isEmpty()){throw  new WalletNotFoundException("Wallet not found") ; }
         return wallet.getBalance();
     }
+
 
 }

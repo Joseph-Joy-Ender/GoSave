@@ -2,6 +2,7 @@ package com.gosave.gosave.services;
 
 import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
+import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.TransferResponse;
 import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,18 @@ class WalletServiceImplTest {
     public void testWalletBalanceAfterReceivingMoney()  {
        BigDecimal balance = walletService.getBalance(301L);
        log.info("res-->{}", balance);
+       
         assertNotNull(balance);
+    }
+
+    @Test
+    @Sql("/scripts/scripts.sql")
+    public  void testGet_CurrentBalance(){
+        WalletRequest request = new WalletRequest();
+        request.setId(3L);
+        BigDecimal amount = BigDecimal.valueOf(2000);
+        request.setBalance(BigDecimal.valueOf(2000));
+        assertEquals(amount,walletService.getCurrentBalance(request));
     }
 
 }

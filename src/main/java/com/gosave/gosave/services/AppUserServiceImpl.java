@@ -2,21 +2,22 @@ package com.gosave.gosave.services;
 import com.gosave.gosave.data.model.Duration;
 import com.gosave.gosave.data.model.User;
 import com.gosave.gosave.dto.request.SaveRequest;
-import com.gosave.gosave.dto.request.TimeRequest;
+import com.gosave.gosave.dto.request.UserRequest;
 import com.gosave.gosave.dto.response.SaveResponse;
 import com.gosave.gosave.exception.UserException;
 import com.gosave.gosave.exception.UserNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import com.gosave.gosave.controller.BeanConfig;
 import com.gosave.gosave.data.model.Wallet;
 import com.gosave.gosave.data.repositories.UserRepository;
-import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletExistException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Timer;
@@ -57,15 +58,15 @@ public class AppUserServiceImpl implements AppUserService {
 
     public SaveResponse initiateTransaction(SaveRequest saveRequest) throws UserException, WalletExistException, UserNotFoundException {
         SaveResponse saveResponse = new SaveResponse();
+        WalletRequest walletRequest = new WalletRequest();
         User foundUser  = userRepository.findByUsername(saveRequest.getUsername());
         Optional<Wallet> foundWallet = walletService.findWalletById(saveRequest.getWallet_id());
         if (foundUser == null )    {throw new UserException("User does not exist") ;}
         if (foundWallet.isEmpty()) {throw new WalletExistException("Wallet does not exist");}
         fundDuration(saveRequest.getDuration()) ;
         calculateInitialDelay(saveRequest);
-//         if (){
-//
-//         }
+        BigDecimal currentBalance = walletService.getCurrentBalance(walletRequest);
+      
             saveResponse.setMessage("");
         return saveResponse;
     }
@@ -106,7 +107,15 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
    
-
+    public User getCurrentUser(String request) throws UserException {
+        ModelMapper mapper = new ModelMapper();
+        User user = mapper.map(request,User.class);
+    User  foundUser = userRepository.findByUsername(user.getUsername()) ;
+    if (foundUser == null){
+        throw  new UserException("User not found");
+    }
+        return user;
+    }
    
 
 

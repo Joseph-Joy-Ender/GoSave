@@ -5,8 +5,11 @@ import com.gosave.gosave.data.model.Wallet;
 import com.gosave.gosave.data.repositories.BankAccountRepository;
 import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
+import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.TransferResponse;
+import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +19,9 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class WalletServiceImpl implements WalletService {
-    @Autowired
     private final WalletRepository walletRepository;
-
-    @Autowired
     private final BankAccountRepository bankAccountRepository;
-    @Autowired
-    private AppUserServiceImpl appUserServiceImpl;
+
 
 
     @Override
@@ -54,6 +53,15 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Wallet save(Wallet wallet) {
         return walletRepository.save(wallet);
+    }
+
+    @Override
+    public BigDecimal getCurrentBalance(WalletRequest walletRequest) {
+        ModelMapper mapper = new ModelMapper();
+        Wallet wallet = mapper.map(walletRequest,Wallet.class);
+        Optional<Wallet> foundWallet = walletRepository.findById( walletRequest.getId());
+        if (foundWallet.isEmpty()){throw  new WalletNotFoundException("Wallet not found") ; }
+        return wallet.getBalance();
     }
 
 }

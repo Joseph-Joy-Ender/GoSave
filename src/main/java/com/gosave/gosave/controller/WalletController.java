@@ -22,11 +22,6 @@ public class WalletController {
     }
 
 
-    @GetMapping("getBalance/{walletId}")
-    public HttpEntity<WalletResponse> getBalance(@PathVariable Long walletId) {
-        System.out.println(walletId);
-        return ResponseEntity.ok(walletService.getBalance(walletId));
 
-    }
 
 }

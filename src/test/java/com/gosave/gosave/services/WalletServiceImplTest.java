@@ -37,13 +37,6 @@ class WalletServiceImplTest {
         assertNotNull(transferResponse);
     }
 
-    @Test
-    @Sql("/scripts/scripts.sql")
-    public void testWalletBalanceAfterReceivingMoney()  {
-       WalletResponse response = walletService.getBalance(101L);
-       log.info("res-->{}", response);
-        assertNotNull(response);
-        System.out.println("The balance:: " + response.getBalance());
-    }
+
 
 }

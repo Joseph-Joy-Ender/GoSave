@@ -2,12 +2,17 @@ package com.gosave.gosave.services;
 
 import com.gosave.gosave.config.BeanConfig;
 import com.gosave.gosave.data.model.User;
+import com.gosave.gosave.data.model.Wallet;
 import com.gosave.gosave.data.repositories.UserRepository;
+import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.InitializeTransactionRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.PayStackTransactionResponse;
+import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.UserNotFoundException;
+import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-import static com.gosave.gosave.services.AppUserServiceImpl.getInitializeTransactionRequestHttpEntity;
 
 @AllArgsConstructor
 @Service
@@ -27,6 +31,12 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserRepository userRepository;
     @Autowired
     private final BeanConfig beanConfig;
+    @Autowired
+    private final ModelMapper mapper = new ModelMapper();
+    @Autowired
+    private final WalletRepository walletRepository;
+
+
 
     @Override
     public ApiResponse<?> transferFundsToWallet(Long userId) throws UserNotFoundException {
@@ -45,6 +55,22 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private HttpEntity<InitializeTransactionRequest> buildPaymentRequest(Optional<User> foundUser) {
-        return getInitializeTransactionRequestHttpEntity(foundUser, beanConfig);
+        InitializeTransactionRequest transactionRequest = new InitializeTransactionRequest();
+        transactionRequest.setEmail(foundUser.get().getEmail());
+        transactionRequest.setAmount(foundUser.get().getAmount());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+beanConfig.getPaystackApiKey());
+        return new HttpEntity<>(transactionRequest, headers);
+    }
+    @Override
+    public WalletResponse getBalance(Long walletId) throws WalletNotFoundException {
+        return mapper.map(findWalletBy(walletId), WalletResponse.class);
+    }
+
+    private Wallet findWalletBy(Long walletId) {
+        return walletRepository.findById(walletId)
+                .orElseThrow(() -> new WalletNotFoundException(
+                        String.format("Customer with id %d not found", walletId)));
     }
 }

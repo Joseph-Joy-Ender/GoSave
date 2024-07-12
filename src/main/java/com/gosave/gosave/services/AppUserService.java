@@ -13,7 +13,6 @@ public interface AppUserService {
     WalletResponse createWallet(WalletRequest walletRequest) throws WalletExistException;
 
 
-    ApiResponse<?> transferFundsToWallet(Long userId);
 
 }
 

@@ -1,5 +1,7 @@
 package com.gosave.gosave.dto.request;
 
+import com.gosave.gosave.data.model.Duration;
+import com.gosave.gosave.data.model.TimePeriod;
 import com.gosave.gosave.data.model.Transaction;
 import lombok.Getter;
 import lombok.Setter;

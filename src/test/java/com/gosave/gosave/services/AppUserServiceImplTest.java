@@ -1,5 +1,6 @@
 package com.gosave.gosave.services;
 import com.gosave.gosave.data.model.Duration;
+import com.gosave.gosave.data.model.TimePeriod;
 import com.gosave.gosave.dto.request.TimeRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@AllArgsConstructor
 @Slf4j
 
 @SpringBootTest
@@ -33,7 +33,6 @@ class AppUserServiceImplTest {
         long duration = appUserServiceImpl.saveFundDuration(daily);
         System.out.println(duration);
     }
-    private PaymentService paymentService;
 
 
 
@@ -45,21 +44,11 @@ class AppUserServiceImplTest {
         timeRequest.setMinutes(30);
         System.out.println(appUserServiceImpl.saveFundTimePeriod(timeRequest));    }
 
-
         @Test
-        @Sql("/scripts/scripts.sql")
-        public void testThatWalletCanSendMoneyMoneyTo () {
-            ApiResponse<?> response = appUserService.transferFundsToWallet(201L);
-            log.info("res-->{}", response);
-            System.out.println(response.getData());
-            assertThat(response).isNotNull();
-        }
-        @Test
-        public void testThatACustomerCanCreateWallet () throws WalletExistException {
+        public void testThatWalletCanBeCreated () throws WalletExistException {
             WalletRequest walletRequest = new WalletRequest();
             walletRequest.setId(100L);
             walletRequest.setBalance(BigDecimal.ZERO);
-//        walletRequest.setTransaction
             WalletResponse walletResponse = appUserService.createWallet(walletRequest);
             assertThat(walletResponse).isNotNull();
 

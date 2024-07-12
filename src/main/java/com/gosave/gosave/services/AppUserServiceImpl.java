@@ -76,7 +76,7 @@ public class AppUserServiceImpl implements AppUserService {
     public WalletResponse createWallet(WalletRequest walletRequest) throws WalletExistException {
         Optional<Wallet> foundWallet = walletRepository.findById(walletRequest.getId());
         WalletResponse walletResponse = new WalletResponse();
-        if(!foundWallet.isPresent()) {
+        if(foundWallet.isEmpty()) {
             Wallet wallet = new Wallet();
             wallet.setId(walletRequest.getId());
             wallet.setBalance(walletRequest.getBalance());
@@ -88,28 +88,9 @@ public class AppUserServiceImpl implements AppUserService {
         return walletResponse;
     }
 
-    @Override
-    public ApiResponse<?> transferFundsToWallet(Long userId) {
-        return null;
-    }
 
 
 
-
-    private HttpEntity<InitializeTransactionRequest> buildPaymentRequest(Optional<User> foundUser) {
-        return getInitializeTransactionRequestHttpEntity(foundUser, beanConfig);
-
-    }
-
-    static HttpEntity<InitializeTransactionRequest> getInitializeTransactionRequestHttpEntity(Optional<User> foundUser, BeanConfig beanConfig) {
-        InitializeTransactionRequest transactionRequest = new InitializeTransactionRequest();
-        transactionRequest.setEmail(foundUser.get().getEmail());
-        transactionRequest.setAmount(foundUser.get().getAmount());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+ beanConfig.getPaystackApiKey());
-        return new HttpEntity<>(transactionRequest, headers);
-    }
 
 }
 

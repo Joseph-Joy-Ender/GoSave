@@ -24,8 +24,6 @@ public class    WalletServiceImpl implements WalletService {
 
     @Autowired
     private final BankAccountRepository bankAccountRepository;
-    @Autowired
-    private final ModelMapper mapper = new ModelMapper();
 
 
 
@@ -44,16 +42,7 @@ public class    WalletServiceImpl implements WalletService {
         return transferResponse;
     }
 
-    @Override
-    public WalletResponse getBalance(Long walletId) throws WalletNotFoundException {
-        return mapper.map(findWalletBy(walletId), WalletResponse.class);
-    }
 
-    private Wallet findWalletBy(Long walletId) {
-        return walletRepository.findById(walletId)
-                .orElseThrow(() -> new WalletNotFoundException(
-                        String.format("Customer with id %d not found", walletId)));
-    }
 
 
 

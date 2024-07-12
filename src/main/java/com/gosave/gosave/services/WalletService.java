@@ -11,5 +11,4 @@ public interface   WalletService {
 
     TransferResponse addMoneyToWalletFromBank(AddMoneyRequest addMoneyRequest);
 
-    WalletResponse getBalance(Long walletId) throws WalletNotFoundException;
 }

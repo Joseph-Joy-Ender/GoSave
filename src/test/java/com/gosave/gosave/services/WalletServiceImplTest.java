@@ -3,6 +3,7 @@ package com.gosave.gosave.services;
 import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
 import com.gosave.gosave.dto.response.TransferResponse;
+import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class WalletServiceImplTest {
         addMoneyRequest.setId(300L);
         addMoneyRequest.setAmount(BigDecimal.ZERO);
         addMoneyRequest.setAccountNumber("1234567890");
-        addMoneyRequest.setDateTime(LocalDateTime.now());
+//        addMoneyRequest.setDateTime(LocalDateTime.now());
         addMoneyRequest.setBankName("AccessBank");
         TransferResponse transferResponse = walletService.addMoneyToWalletFromBank(addMoneyRequest);
         assertNotNull(transferResponse);
@@ -39,9 +40,10 @@ class WalletServiceImplTest {
     @Test
     @Sql("/scripts/scripts.sql")
     public void testWalletBalanceAfterReceivingMoney()  {
-       BigDecimal balance = walletService.getBalance(301L);
-       log.info("res-->{}", balance);
-        assertNotNull(balance);
+       WalletResponse response = walletService.getBalance(101L);
+       log.info("res-->{}", response);
+        assertNotNull(response);
+        System.out.println("The balance:: " + response.getBalance());
     }
 
 }

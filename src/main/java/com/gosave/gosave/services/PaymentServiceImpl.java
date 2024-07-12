@@ -1,6 +1,6 @@
 package com.gosave.gosave.services;
 
-import com.gosave.gosave.controller.BeanConfig;
+import com.gosave.gosave.config.BeanConfig;
 import com.gosave.gosave.data.model.User;
 import com.gosave.gosave.data.repositories.UserRepository;
 import com.gosave.gosave.dto.request.InitializeTransactionRequest;

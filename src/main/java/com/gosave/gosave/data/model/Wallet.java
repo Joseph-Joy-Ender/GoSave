@@ -19,6 +19,5 @@ public class Wallet {
     private Long id;
     private BigDecimal balance;
     private Duration duration;
-    private TimePeriod timePeriod;
     private BigDecimal amount;
 }

@@ -1,3 +1,4 @@
+
 package com.gosave.gosave.services;
 
 import com.gosave.gosave.config.BeanConfig;
@@ -20,16 +21,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.Optional;
-
 
 @AllArgsConstructor
 @Service
 public class PaymentServiceImpl implements PaymentService {
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final BeanConfig beanConfig;
     @Autowired
     private final ModelMapper mapper = new ModelMapper();
@@ -72,5 +69,6 @@ public class PaymentServiceImpl implements PaymentService {
         return walletRepository.findById(walletId)
                 .orElseThrow(() -> new WalletNotFoundException(
                         String.format("Customer with id %d not found", walletId)));
+
     }
 }

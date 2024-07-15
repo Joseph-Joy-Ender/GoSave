@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class TransferResponse {
     private Long id;
+    private  String message;
 }

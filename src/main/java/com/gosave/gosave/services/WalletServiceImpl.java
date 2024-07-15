@@ -1,17 +1,28 @@
 package com.gosave.gosave.services;
 
+import com.gosave.gosave.controller.BeanConfig;
 import com.gosave.gosave.data.model.BankAccount;
+import com.gosave.gosave.data.model.User;
 import com.gosave.gosave.data.model.Wallet;
 import com.gosave.gosave.data.repositories.BankAccountRepository;
 import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
+import com.gosave.gosave.dto.request.InitializeTransactionRequest;
+import com.gosave.gosave.dto.request.SaveRequest;
 import com.gosave.gosave.dto.request.WalletRequest;
+import com.gosave.gosave.dto.response.ApiResponse;
+import com.gosave.gosave.dto.response.PayStackTransactionResponse;
 import com.gosave.gosave.dto.response.TransferResponse;
+import com.gosave.gosave.exception.UserNotFoundException;
 import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -21,6 +32,7 @@ import java.util.Optional;
 public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final BankAccountRepository bankAccountRepository;
+    private final BeanConfig beanConfig;
 
 
 
@@ -38,6 +50,26 @@ public class WalletServiceImpl implements WalletService {
 
         return transferResponse;
     }
+
+    @Override
+    public BigDecimal addFundToWalletFromBank(SaveRequest saveRequest) {
+        TransferResponse response = new TransferResponse();
+        ModelMapper mapper = new ModelMapper();
+        Wallet mappedWallet = mapper.map(saveRequest, Wallet.class);
+        Optional<Wallet> foundWalletOptional = walletRepository.findById(mappedWallet.getId());
+        if (foundWalletOptional.isEmpty()) {
+            throw new WalletNotFoundException("Wallet not found.");
+        }
+        Wallet foundWallet = foundWalletOptional.get();
+        BigDecimal currentBalance = foundWallet.getBalance();
+        BigDecimal addedAmount = saveRequest.getAmount();
+        currentBalance = currentBalance.add(addedAmount);
+        foundWallet.setBalance(currentBalance);
+        walletRepository.save(foundWallet);
+        response.setMessage(addedAmount + " has been added to your wallet");
+        return currentBalance;
+    }
+
 
     @Override
     public BigDecimal getBalance(Long walletId) {

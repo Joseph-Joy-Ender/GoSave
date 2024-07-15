@@ -1,7 +1,6 @@
 package com.gosave.gosave.dto.request;
 
 import com.gosave.gosave.data.model.Duration;
-import com.gosave.gosave.data.model.TimePeriod;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,10 +10,15 @@ import java.math.BigDecimal;
 @Getter
 public class SaveRequest {
     private Duration duration;
-    private int hour;
-    private  int minutes;
-    private BigDecimal amount;
     private String username;
-    private Long  wallet_id;
-
+    private int hour;
+    private int minutes;
+    private Long id;
+    private BigDecimal amount;
+    private String bankName;
+    private String accountNumber;
+    private BigDecimal balance;
 }
+    
+
+

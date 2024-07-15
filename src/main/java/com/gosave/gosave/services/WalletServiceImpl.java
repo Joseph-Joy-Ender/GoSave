@@ -1,44 +1,35 @@
 package com.gosave.gosave.services;
-
-import com.gosave.gosave.controller.BeanConfig;
+import com.gosave.gosave.config.BeanConfig;
 import com.gosave.gosave.data.model.BankAccount;
-import com.gosave.gosave.data.model.User;
 import com.gosave.gosave.data.model.Wallet;
 import com.gosave.gosave.data.repositories.BankAccountRepository;
 import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
-import com.gosave.gosave.dto.request.InitializeTransactionRequest;
 import com.gosave.gosave.dto.request.SaveRequest;
 import com.gosave.gosave.dto.request.WalletRequest;
-import com.gosave.gosave.dto.response.ApiResponse;
-import com.gosave.gosave.dto.response.PayStackTransactionResponse;
 import com.gosave.gosave.dto.response.TransferResponse;
-import com.gosave.gosave.exception.UserNotFoundException;
+import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class WalletServiceImpl implements WalletService {
+
     private final WalletRepository walletRepository;
     private final BankAccountRepository bankAccountRepository;
     private final BeanConfig beanConfig;
-
+    private final ModelMapper mapper = new ModelMapper();
 
 
     @Override
     public TransferResponse addMoneyToWalletFromBank(AddMoneyRequest addMoneyRequest) {
-        if(walletRepository.existsById(addMoneyRequest.getId())) throw new RuntimeException("\"wallet with id\" +walletRepository.findById(addMoneyRequest.getId())+ \"does not exist\" ");
+        if (walletRepository.existsById(addMoneyRequest.getId()))
+            throw new RuntimeException("\"wallet with id\" +walletRepository.findById(addMoneyRequest.getId())+ \"does not exist\" ");
         BankAccount bankAccount = new BankAccount();
         bankAccount.setAccountNumber(addMoneyRequest.getAccountNumber());
         bankAccount.setBalance(addMoneyRequest.getAmount());
@@ -71,10 +62,19 @@ public class WalletServiceImpl implements WalletService {
     }
 
 
-    @Override
-    public BigDecimal getBalance(Long walletId) {
-        BigDecimal balance = walletRepository.findById(walletId).get().getBalance();
-        return balance;
+//    @Override
+//    public BigDecimal getBalance(Long walletId) {
+//        BigDecimal balance = walletRepository.findById(walletId).get().getBalance();
+//        return balance; }
+     @Override
+    public WalletResponse getBalance(Long walletId) throws WalletNotFoundException {
+        return mapper.map(findWalletBy(walletId), WalletResponse.class);
+    }
+
+    private Wallet findWalletBy(Long walletId) {
+        return walletRepository.findById(walletId)
+                .orElseThrow(() -> new WalletNotFoundException(
+                        String.format("Customer with id %d not found", walletId)));
     }
 
     @Override
@@ -90,10 +90,13 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public BigDecimal getCurrentBalance(WalletRequest walletRequest) {
         ModelMapper mapper = new ModelMapper();
-        Wallet wallet = mapper.map(walletRequest,Wallet.class);
-        Optional<Wallet> foundWallet = walletRepository.findById( walletRequest.getId());
-        if (foundWallet.isEmpty()){throw  new WalletNotFoundException("Wallet not found") ; }
+        Wallet wallet = mapper.map(walletRequest, Wallet.class);
+        Optional<Wallet> foundWallet = walletRepository.findById(walletRequest.getId());
+        if (foundWallet.isEmpty()) {
+            throw new WalletNotFoundException("Wallet not found");
+        }
         return wallet.getBalance();
     }
 
 }
+

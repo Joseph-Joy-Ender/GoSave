@@ -14,5 +14,10 @@ public class AddMoneyRequest {
     private BigDecimal amount;
     private String bankName;
     private String accountNumber;
+<<<<<<< HEAD
+    private LocalDateTime dateTime;
+    private BigDecimal balance;
+=======
 //    private LocalDateTime dateTime;
+>>>>>>> a8ef42e6f5169a08cf763d3d4fe09d1c01861450
 }

@@ -6,13 +6,11 @@ import com.gosave.gosave.data.repositories.UserRepository;
 import com.gosave.gosave.dto.request.InitializeTransactionRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.PayStackTransactionResponse;
+import com.gosave.gosave.dto.response.TransactionHistoryResponse;
+import com.gosave.gosave.exception.UserException;
 import com.gosave.gosave.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
@@ -22,6 +20,7 @@ import java.util.Optional;
 public class PaymentServiceImpl implements PaymentService {
     private final UserRepository userRepository;
     private final BeanConfig beanConfig;
+
 
     @Override
     public ApiResponse<?> transferFundsToWallet(Long userId) throws UserNotFoundException {
@@ -47,5 +46,22 @@ public class PaymentServiceImpl implements PaymentService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+ beanConfig.getPaystackApiKey());
         return new HttpEntity<>(transactionRequest, headers);
+    }
+
+    @Override
+    public TransactionHistoryResponse getTransactionHistory(Long id) throws UserException {
+     Optional<User>  foundUser = userRepository.findById(id);
+     if (foundUser.isEmpty()){
+         throw  new UserException("User not found");
+     }
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + beanConfig.getPaystackApiKey());
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<TransactionHistoryResponse> response = restTemplate.exchange(beanConfig.getTransactionhistoryBaseUrl(), HttpMethod.GET, entity, TransactionHistoryResponse.class);
+
+        return response.getBody();
     }
 }

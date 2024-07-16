@@ -1,41 +1,22 @@
 package com.gosave.gosave.services;
-
 import com.gosave.gosave.data.model.Duration;
 import com.gosave.gosave.data.model.User;
 import com.gosave.gosave.dto.request.SaveRequest;
+import com.gosave.gosave.dto.request.UserRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.SaveResponse;
+import com.gosave.gosave.dto.response.UserResponse;
 import com.gosave.gosave.exception.UserException;
 import com.gosave.gosave.exception.UserNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import com.gosave.gosave.controller.BeanConfig;
 import com.gosave.gosave.data.model.Wallet;
-
-import com.gosave.gosave.data.repositories.WalletRepository;
-
 import com.gosave.gosave.data.repositories.UserRepository;
-
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletExistException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-<<<<<<< HEAD
-=======
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
-
-import java.math.BigDecimal;
- 
->>>>>>> a8ef42e6f5169a08cf763d3d4fe09d1c01861450
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Timer;
@@ -49,7 +30,20 @@ public class AppUserServiceImpl implements AppUserService {
     private final WalletService walletService;
     private final UserRepository userRepository;
 
-
+     @Override
+     public UserResponse registerUser(UserRequest userRequest) {
+       ModelMapper mapper = new ModelMapper();
+       UserResponse response =  new UserResponse();
+       User mappedUser =  mapper.map(userRequest,User.class) ;
+       User   foundUser = userRepository.findByUsername(mappedUser.getUsername()) ;
+       if (foundUser != null){throw new UserException("User with username "+mappedUser.getUsername() +" already  exist .");}
+       userRepository.save(mappedUser);
+         Wallet mappedWallet = mapper.map(userRequest, Wallet.class);
+         mappedWallet.setUser(mappedUser);
+         walletService.save(mappedWallet);
+         response.setMessage("User with the username "+mappedUser.getUsername()+" Has been successfully  registered .");
+         return response;
+     }
     @Override
     public SaveResponse save(SaveRequest saveRequest) {
         SaveResponse saveResponse = new SaveResponse();
@@ -68,7 +62,7 @@ public class AppUserServiceImpl implements AppUserService {
         timer.schedule(timerTask, calculateInitialDelay(saveRequest));
         saveResponse.setMessage("Hello " +saveRequest.getUsername()+
                 " the amount of  "+saveRequest.getAmount()
-                + " have been added to your wallet,  your current wallet balance is   "
+                + " has been added to your wallet,  your current wallet balance is >>>>>>>>  "
                 +saveRequest.getBalance());
         return saveResponse;
     }
@@ -87,9 +81,9 @@ public class AppUserServiceImpl implements AppUserService {
         if (foundWallet.isEmpty()) {throw new WalletExistException("Wallet does not exist");}
         fundDuration(saveRequest.getDuration()) ;
         calculateInitialDelay(saveRequest);
-        ApiResponse<?>  response = paymentService.transferFundsToWallet(saveRequest.getId());
+        ApiResponse<?>  response = paymentService.transferMoneyToWallet(saveRequest);
         if (response != null){
-            System.out.println(response);
+            log.info(">>>>>>>>",response);
             walletService.addFundToWalletFromBank(saveRequest);
             saveResponse.setMessage("Hello your savings have been made");
         }
@@ -132,10 +126,7 @@ public class AppUserServiceImpl implements AppUserService {
         return walletResponse;
     }
 
-    @Override
-    public Optional<User> findUser(Long id) {
-        return userRepository.findById(id);
-    }
+    
 
 
 }

@@ -2,13 +2,13 @@ package com.gosave.gosave.controller;
 
 import com.gosave.gosave.dto.request.AddMoneyRequest;
 import com.gosave.gosave.dto.response.TransferResponse;
-import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.services.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @Controller
 @RequestMapping("/api/v1/GoSave/")
@@ -23,7 +23,7 @@ public class WalletController {
 
 
     @GetMapping("getBalance/{walletId}")
-    public HttpEntity<WalletResponse> getBalance(@PathVariable Long walletId) {
+    public ResponseEntity<BigDecimal> getBalance(@PathVariable Long walletId) {
         System.out.println(walletId);
         return ResponseEntity.ok(walletService.getBalance(walletId));
 

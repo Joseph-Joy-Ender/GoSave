@@ -1,8 +1,6 @@
 package com.gosave.gosave.services;
 import com.gosave.gosave.config.BeanConfig;
-import com.gosave.gosave.data.model.BankAccount;
 import com.gosave.gosave.data.model.Wallet;
-import com.gosave.gosave.data.repositories.BankAccountRepository;
 import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
 import com.gosave.gosave.dto.request.SaveRequest;
@@ -21,26 +19,11 @@ import java.util.Optional;
 public class WalletServiceImpl implements WalletService {
 
     private final WalletRepository walletRepository;
-    private final BankAccountRepository bankAccountRepository;
     private final BeanConfig beanConfig;
     private final ModelMapper mapper = new ModelMapper();
 
 
-    @Override
-    public TransferResponse addMoneyToWalletFromBank(AddMoneyRequest addMoneyRequest) {
-        if (walletRepository.existsById(addMoneyRequest.getId()))
-            throw new RuntimeException("\"wallet with id\" +walletRepository.findById(addMoneyRequest.getId())+ \"does not exist\" ");
-        BankAccount bankAccount = new BankAccount();
-        bankAccount.setAccountNumber(addMoneyRequest.getAccountNumber());
-        bankAccount.setBalance(addMoneyRequest.getAmount());
-        bankAccount.setBankName(addMoneyRequest.getBankName());
-        bankAccount.setId(addMoneyRequest.getId());
-        BankAccount savedBankAcc = bankAccountRepository.save(bankAccount);
-        TransferResponse transferResponse = new TransferResponse();
-        transferResponse.setId(savedBankAcc.getId());
 
-        return transferResponse;
-    }
 
     @Override
     public BigDecimal addFundToWalletFromBank(SaveRequest saveRequest) {
@@ -62,12 +45,13 @@ public class WalletServiceImpl implements WalletService {
     }
 
 
-//    @Override
-//    public BigDecimal getBalance(Long walletId) {
-//        BigDecimal balance = walletRepository.findById(walletId).get().getBalance();
-//        return balance; }
+    @Override
+    public BigDecimal getBalance(Long walletId) {
+        BigDecimal balance = walletRepository.findById(walletId).get().getBalance();
+        return balance; }
+
      @Override
-    public WalletResponse getBalance(Long walletId) throws WalletNotFoundException {
+    public WalletResponse getBalances(Long walletId) throws WalletNotFoundException {
         return mapper.map(findWalletBy(walletId), WalletResponse.class);
     }
 

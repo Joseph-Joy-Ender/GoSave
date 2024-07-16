@@ -1,8 +1,10 @@
 package com.gosave.gosave.controller;
 
 import com.gosave.gosave.data.model.Wallet;
+import com.gosave.gosave.dto.request.SaveRequest;
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
+import com.gosave.gosave.dto.response.SaveResponse;
 import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletExistException;
 import com.gosave.gosave.services.AppUserService;
@@ -25,4 +27,8 @@ public class AppUserController {
        return ResponseEntity.ok(appUserService.createWallet(walletRequest));
     }
 
+    @PostMapping("/saveMoney")
+     public ResponseEntity<SaveResponse> saveMoney(@RequestBody SaveRequest saveRequest) {
+        return ResponseEntity.ok(appUserService.save(saveRequest));
+    }
 }

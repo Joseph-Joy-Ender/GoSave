@@ -42,7 +42,7 @@ class WalletServiceImplTest {
     @Sql("/scripts/scripts.sql")
     public void testWalletBalanceAfterReceivingMoney()  {
  
-       WalletResponse response = walletService.getBalance(101L);
+       WalletResponse response = walletService.getBalances(101L);
        log.info("res-->{}", response);
         assertNotNull(response);
         System.out.println("The balance:: " + response.getBalance());
@@ -73,6 +73,7 @@ class WalletServiceImplTest {
         BigDecimal balance = walletService.addFundToWalletFromBank(saveRequest);
         BigDecimal expected = new BigDecimal("5000.00");
         assertEquals(expected,walletService.addFundToWalletFromBank(saveRequest));
+        System.out.println(walletService.addFundToWalletFromBank(saveRequest));
     }
 
 }

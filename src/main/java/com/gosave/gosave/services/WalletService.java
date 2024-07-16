@@ -1,3 +1,4 @@
+
 package com.gosave.gosave.services;
 
 import com.gosave.gosave.data.model.Wallet;
@@ -13,11 +14,10 @@ import java.util.Optional;
 
 public interface   WalletService {
 
-    TransferResponse addMoneyToWalletFromBank(AddMoneyRequest addMoneyRequest);
     BigDecimal addFundToWalletFromBank (SaveRequest saveRequest);
     WalletResponse getBalance(Long walletId) throws WalletNotFoundException;
     Optional<Wallet> findWalletById(Long id);
     Wallet save(Wallet wallet);
     BigDecimal getCurrentBalance (WalletRequest walletRequest);
- 
+
 }

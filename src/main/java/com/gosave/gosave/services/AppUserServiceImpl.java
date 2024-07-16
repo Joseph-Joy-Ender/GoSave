@@ -1,5 +1,8 @@
+
 package com.gosave.gosave.services;
 
+
+import com.gosave.gosave.config.BeanConfig;
 import com.gosave.gosave.data.model.Duration;
 import com.gosave.gosave.data.model.User;
 import com.gosave.gosave.dto.request.SaveRequest;
@@ -10,34 +13,27 @@ import com.gosave.gosave.exception.UserNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import com.gosave.gosave.controller.BeanConfig;
 import com.gosave.gosave.data.model.Wallet;
 
 import com.gosave.gosave.data.repositories.WalletRepository;
+import com.gosave.gosave.dto.request.WalletRequest;
 
 import com.gosave.gosave.data.repositories.UserRepository;
 
-import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletExistException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-<<<<<<< HEAD
-=======
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import java.util.Optional;
 
 
 import java.math.BigDecimal;
  
->>>>>>> a8ef42e6f5169a08cf763d3d4fe09d1c01861450
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -48,6 +44,8 @@ public class AppUserServiceImpl implements AppUserService {
     private final PaymentService paymentService;
     private final WalletService walletService;
     private final UserRepository userRepository;
+    private final BeanConfig beanConfig;
+    private final PaymentServiceImpl paymentServiceImpl;
 
 
     @Override
@@ -58,7 +56,7 @@ public class AppUserServiceImpl implements AppUserService {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                try {    
+                try {
                     withdrawFromAccount(saveRequest);
                 } catch (UserException | UserNotFoundException | WalletExistException e) {
                     throw new RuntimeException(e);
@@ -94,9 +92,11 @@ public class AppUserServiceImpl implements AppUserService {
             saveResponse.setMessage("Hello your savings have been made");
         }
 
+
+        saveResponse.setMessage("");
         return saveResponse;
     }
-    
+
     public long fundDuration(Duration duration){
         return switch (duration) {
             case DAILY -> 24L * 60 * 60 * 1000;
@@ -132,12 +132,21 @@ public class AppUserServiceImpl implements AppUserService {
         return walletResponse;
     }
 
-    @Override
-    public Optional<User> findUser(Long id) {
-        return userRepository.findById(id);
+
+    public User getCurrentUser(String request) throws UserException {
+        ModelMapper mapper = new ModelMapper();
+        User user = mapper.map(request,User.class);
+        User  foundUser = userRepository.findByUsername(user.getUsername()) ;
+        if (foundUser == null){
+            throw  new UserException("User not found");
+        }
+        return user;
     }
 
 
 }
+
+
+
 
 

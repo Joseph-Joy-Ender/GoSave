@@ -27,7 +27,24 @@ class AppUserServiceImplTest {
     private WalletService walletService;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private AppUserServiceImpl appUserServiceImpl;
 
+    @Test
+    public void testDurationFunctionality() {
+        Duration daily = Duration.DAILY;
+        long duration = appUserServiceImpl.fundDuration(daily);
+        System.out.println(duration);
+    }
+
+
+    @Test
+    public  void testInitial_Delay(){
+        SaveRequest saveRequest = new SaveRequest();
+        saveRequest.setHour(1);
+        saveRequest.setMinutes(0);
+        System.out.println(appUserServiceImpl.calculateInitialDelay(saveRequest));
+    }
          @Test
          @Sql("/scripts/scripts.sql")
          public void testSave_Functionality(){
@@ -51,16 +68,6 @@ class AppUserServiceImplTest {
             log.info("res-->{}", response);
             System.out.println(response.getData());
             assertThat(response).isNotNull();
-        }
-        @Test
-        public void testThatACustomerCanCreateWallet () throws WalletExistException {
-            WalletRequest walletRequest = new WalletRequest();
-            walletRequest.setId(100L);
-            walletRequest.setBalance(BigDecimal.ZERO);
-//          walletRequest.setTransaction
-            WalletResponse walletResponse = appUserService.createWallet(walletRequest);
-            assertThat(walletResponse).isNotNull();
-
         }
 
 

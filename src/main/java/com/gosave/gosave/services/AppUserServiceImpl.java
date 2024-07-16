@@ -24,7 +24,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,7 +40,7 @@ public class AppUserServiceImpl implements AppUserService {
     private final UserRepository userRepository;
     private final BeanConfig beanConfig;
     private final ModelMapper mapper = new ModelMapper();
-    private PasswordEncoder passwordEncoder;
+//    private PasswordEncoder passwordEncoder;
 
 
 
@@ -74,7 +74,7 @@ public class AppUserServiceImpl implements AppUserService {
     public CreateAccountResponse createAccount(CreateAccountRequest accountRequest) throws UserException {
         if (userRepository.existsByEmail(accountRequest.getEmail())) throw new UserException(GenerateApiResponse.ACCOUNT_WITH_THIS_EMAIL_ALREADY_EXIST);
         User user = mapper.map(accountRequest, User.class);
-        user.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
+//        user.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
         userRepository.save(user);
         return GenerateApiResponse.create(GenerateApiResponse.REGISTER_SUCCESSFUL);
     }

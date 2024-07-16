@@ -30,7 +30,8 @@ class WalletServiceImplTest {
     public void testThatMoneyCanBeAddedToWallet() throws WalletNotFoundException {
         AddMoneyRequest addMoneyRequest = new AddMoneyRequest();
         addMoneyRequest.setId(300L);
-        addMoneyRequest.setAmount(BigDecimal.ZERO);
+//        addMoneyRequest.setAmount(BigDecimal.ZERO);
+        addMoneyRequest.setAmount(BigDecimal.valueOf(5000));
         addMoneyRequest.setAccountNumber("1234567890");
         addMoneyRequest.setDateTime(LocalDateTime.now());
         addMoneyRequest.setBankName("AccessBank");

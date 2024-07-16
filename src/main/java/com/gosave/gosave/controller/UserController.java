@@ -1,6 +1,6 @@
 package com.gosave.gosave.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @GetMapping
-    @PreAuthorize("hasRole('client_user')")
+//    @PreAuthorize("hasRole('client_user')")
     public String hello(){
         return "hello";
     }
 
     @GetMapping("/hello-2")
-    @PreAuthorize("hasRole('client_admin')")
+//    @PreAuthorize("hasRole('client_admin')")
     public String hello2(){
         return "hello Admin";
     }

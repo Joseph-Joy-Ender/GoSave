@@ -22,6 +22,8 @@ public class User {
     private String password;
     private String email;
     private BigDecimal amount;
+    private String firstName;
+    private String lastName;
 
     @OneToOne
     private Wallet wallet;

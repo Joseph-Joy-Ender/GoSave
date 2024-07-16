@@ -1,8 +1,8 @@
 package com.gosave.gosave.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,16 +15,23 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtAuthConverter jwtAuthConverter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(WhiteList.patterns)
+                        .permitAll()
                         .anyRequest().authenticated()
+
+
                 )
-                .oauth2ResourceServer((oauth2) -> oauth2
-                        .jwt(Customizer.withDefaults())
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(jwt ->
+                        jwt.jwtAuthenticationConverter(jwtAuthConverter))
+
                 );
         http
                .sessionManagement(sessionManagement -> sessionManagement

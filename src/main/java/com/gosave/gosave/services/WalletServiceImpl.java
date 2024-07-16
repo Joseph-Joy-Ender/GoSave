@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 public class WalletServiceImpl implements WalletService {
     @Autowired
     private final WalletRepository walletRepository;
-
     @Autowired
     private final BankAccountRepository bankAccountRepository;
     @Autowired

@@ -1,19 +1,24 @@
 package com.gosave.gosave.dto.request;
 
+import com.gosave.gosave.data.model.Duration;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-@Getter
 @Setter
-public class AddMoneyRequest {
+@Getter
+public class SaveRequest {
+    private Duration duration;
+    private String username;
+    private int hour;
+    private int minutes;
     private Long id;
-    private BigDecimal balance;
     private BigDecimal amount;
     private String bankName;
     private String accountNumber;
-    private LocalDateTime dateTime;
-//    private BigDecimal balance;
+    private BigDecimal balance;
 }
+    
+
+

@@ -1,11 +1,10 @@
 package com.gosave.gosave.config;
 
 import lombok.Getter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @Getter
@@ -14,9 +13,12 @@ public class BeanConfig {
     private String paystackBaseUrl;
     @Value("${paystack.api.key}")
     private String paystackApiKey;
+    @Value("https://api.paystack.co/transaction")
+     private String transactionhistoryBaseUrl;
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public ModelMapper modelMapper(){
+        return new ModelMapper();
+    }
+
 }

@@ -1,5 +1,13 @@
+SET FOREIGN_KEY_CHECKS = 0;
+truncate table user;
+truncate table wallet;
+SET FOREIGN_KEY_CHECKS = 1;
+
 insert into user(id, username, password, email, amount) values
-(201,'joyender', 'password', 'joyender@gmail.com',1000);
+(201,'joyender', 'password', 'joyender@gmail.com',1000 * 100);
 
 insert into wallet(id, balance) values
-(301,1000);
+(101,1000);
+
+insert into wallet(id, balance) values
+    (3,1000);

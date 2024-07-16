@@ -13,13 +13,13 @@ import org.springframework.context.annotation.Configuration;
 public class KeycloakConfig {
 
     private static final Logger log = LoggerFactory.getLogger(KeycloakConfig.class);
-    @Value("${keycloak.auth.username}")
+//    @Value("${keycloak.auth.username}")
     private String keycloakUsername;
-    @Value("${keycloak.auth.password}")
+//    @Value("${keycloak.auth.password}")
     private String keycloakPassword;
-    @Value("${realm}")
+//    @Value("${realm}")
     private String keycloakRealm;
-    @Value("${keycloak.clientId}")
+//    @Value("${keycloak.clientId}")
     private String keycloakClientId;
     private String keycloakClientSecret;
     private String grant_type;

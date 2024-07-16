@@ -9,10 +9,13 @@ import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.InitializeTransactionRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.PayStackTransactionResponse;
+import com.gosave.gosave.dto.response.TransactionHistoryResponse;
+import com.gosave.gosave.exception.UserException;
 import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.UserNotFoundException;
 import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -32,6 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final ModelMapper mapper = new ModelMapper();
     @Autowired
     private final WalletRepository walletRepository;
+
 
 
 
@@ -57,7 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
         transactionRequest.setAmount(foundUser.get().getAmount());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+beanConfig.getPaystackApiKey());
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+ beanConfig.getPaystackApiKey());
         return new HttpEntity<>(transactionRequest, headers);
     }
     @Override
@@ -70,5 +74,22 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new WalletNotFoundException(
                         String.format("Customer with id %d not found", walletId)));
 
+    }
+
+    @Override
+    public TransactionHistoryResponse getTransactionHistory(Long id) throws UserException {
+     Optional<User>  foundUser = userRepository.findById(id);
+     if (foundUser.isEmpty()){
+         throw  new UserException("User not found");
+     }
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + beanConfig.getPaystackApiKey());
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<TransactionHistoryResponse> response = restTemplate.exchange(beanConfig.getTransactionhistoryBaseUrl(), HttpMethod.GET, entity, TransactionHistoryResponse.class);
+
+        return response.getBody();
     }
 }

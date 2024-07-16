@@ -13,6 +13,8 @@ public class BeanConfig {
     private String paystackBaseUrl;
     @Value("${paystack.api.key}")
     private String paystackApiKey;
+    @Value("https://api.paystack.co/transaction")
+     private String transactionhistoryBaseUrl;
 
     @Bean
     public ModelMapper modelMapper(){

@@ -51,16 +51,6 @@ class AppUserServiceImplTest {
             System.out.println(response.getData());
             assertThat(response).isNotNull();
         }
-        @Test
-        public void testThatACustomerCanCreateWallet () throws WalletExistException {
-            WalletRequest walletRequest = new WalletRequest();
-            walletRequest.setId(100L);
-            walletRequest.setBalance(BigDecimal.ZERO);
-//        walletRequest.setTransaction
-            WalletResponse walletResponse = appUserService.createWallet(walletRequest);
-            assertThat(walletResponse).isNotNull();
-
-        }
 
 
 

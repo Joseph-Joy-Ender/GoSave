@@ -1,20 +1,15 @@
 
 package com.gosave.gosave.services;
 
-import com.gosave.gosave.data.model.BankAccount;
 import com.gosave.gosave.data.model.Wallet;
-import com.gosave.gosave.data.repositories.BankAccountRepository;
 import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.AddMoneyRequest;
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.TransferResponse;
 
-import com.gosave.gosave.dto.response.WalletResponse;
-
 import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

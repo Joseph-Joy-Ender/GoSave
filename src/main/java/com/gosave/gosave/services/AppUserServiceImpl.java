@@ -105,21 +105,6 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
 
-    @Override
-    public WalletResponse createWallet(WalletRequest walletRequest) throws WalletExistException {
-        Optional<Wallet> foundWallet = walletService.findWalletById(walletRequest.getId());
-        WalletResponse walletResponse = new WalletResponse();
-        if(!foundWallet.isPresent()) {
-            Wallet wallet = new Wallet();
-            wallet.setId(walletRequest.getId());
-            wallet.setBalance(walletRequest.getBalance());
-            walletService.save(wallet);
-            walletResponse.setId(wallet.getId());
-        }else{
-            throw new WalletExistException("wallet with id" +walletService.findWalletById(walletRequest.getId())+ "already exist");
-        }
-        return walletResponse;
-    }
 
 
     public User getCurrentUser(String request) throws UserException {

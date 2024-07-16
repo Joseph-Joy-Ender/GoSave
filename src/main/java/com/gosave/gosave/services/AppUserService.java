@@ -11,7 +11,6 @@ public interface AppUserService {
 
     SaveResponse save(SaveRequest saveRequest);
 
-    WalletResponse createWallet(WalletRequest walletRequest) throws WalletExistException;
 
 
 

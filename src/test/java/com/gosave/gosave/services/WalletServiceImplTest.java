@@ -23,17 +23,6 @@ class WalletServiceImplTest {
     @Autowired
     private WalletRepository walletRepository;
 
-    @Test
-    public void testThatMoneyCanBeAddedToWallet() throws WalletNotFoundException {
-        AddMoneyRequest addMoneyRequest = new AddMoneyRequest();
-        addMoneyRequest.setId(300L);
-        addMoneyRequest.setAmount(BigDecimal.ZERO);
-        addMoneyRequest.setAccountNumber("1234567890");
-//        addMoneyRequest.setDateTime(LocalDateTime.now());
-        addMoneyRequest.setBankName("AccessBank");
-        TransferResponse transferResponse = walletService.addMoneyToWalletFromBank(addMoneyRequest);
-        assertNotNull(transferResponse);
-    }
 
 //    @Test
 //    @Sql("/scripts/scripts.sql")

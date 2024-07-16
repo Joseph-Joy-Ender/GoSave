@@ -27,6 +27,8 @@ class AppUserServiceImplTest {
     private WalletService walletService;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private AppUserServiceImpl appUserServiceImpl;
 
     @Test
     public void testDurationFunctionality() {

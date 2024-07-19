@@ -1,5 +1,6 @@
 package com.gosave.gosave.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.lang.NonNull;
@@ -17,14 +18,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@Slf4j
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter =
             new JwtGrantedAuthoritiesConverter();
 
-//    @Value("${jwt.auth.converter.principle-attribute}")
-    private String principleAttribute;
-//    @Value("${jwt.auth.converter.resource-id}")
+    @Value("${jwt.auth.converter.principal-attribute}")
+    private String principalAttribute;
+    @Value("${jwt.auth.converter.resource-id}")
     private String resourceId;
 
     @Override
@@ -37,38 +39,41 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         return new JwtAuthenticationToken(
                 jwt,
                 authorities,
-                getPrincipleClaimName(jwt)
+                getPrincipalClaimName(jwt)
+
         );
+
     }
 
-    private String getPrincipleClaimName(Jwt jwt) {
+    private String getPrincipalClaimName(Jwt jwt) {
         String claimName = JwtClaimNames.SUB;
-        if (principleAttribute != null) {
-            claimName = principleAttribute;
+        if (principalAttribute != null) {
+            claimName = principalAttribute;
         }
         return jwt.getClaim(claimName);
     }
 
     private Collection<? extends GrantedAuthority> extractResourceRoles(Jwt jwt) {
-        Map<String, Object> resourceAccess;
-        Map<String, Object> resource;
-        Collection<String> resourceRoles;
         if (jwt.getClaim("resource_access") == null) {
             return Set.of();
         }
-        resourceAccess = jwt.getClaim("resource_access");
 
+        Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
         if (resourceAccess.get(resourceId) == null) {
+            log.info("Resource Access {}", resourceAccess);
+            return Set.of();
+
+        }
+
+        Map<String, Object> resource = (Map<String, Object>) resourceAccess.get(resourceId);
+        if (resource.get("roles") == null) {
             return Set.of();
         }
-        resource = (Map<String, Object>) resourceAccess.get(resourceId);
 
-        resourceRoles = (Collection<String>) resource.get("roles");
+        Collection<String> resourceRoles = (Collection<String>) resource.get("roles");
         return resourceRoles
                 .stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toSet());
     }
-
-
 }

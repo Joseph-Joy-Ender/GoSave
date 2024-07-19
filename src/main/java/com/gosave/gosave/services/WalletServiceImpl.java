@@ -23,9 +23,7 @@ import java.util.Optional;
 public class WalletServiceImpl implements WalletService {
 
     private final WalletRepository walletRepository;
-    @Autowired
     private final BankAccountRepository bankAccountRepository;
-    private final BeanConfig beanConfig;
     private final ModelMapper mapper = new ModelMapper();
 
 
@@ -48,7 +46,6 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public BigDecimal addFundToWalletFromBank(SaveRequest saveRequest) {
         TransferResponse response = new TransferResponse();
-        ModelMapper mapper = new ModelMapper();
         Wallet mappedWallet = mapper.map(saveRequest, Wallet.class);
         Optional<Wallet> foundWalletOptional = walletRepository.findById(mappedWallet.getId());
         if (foundWalletOptional.isEmpty()) {
@@ -65,10 +62,6 @@ public class WalletServiceImpl implements WalletService {
     }
 
 
-//    @Override
-//    public BigDecimal getBalance(Long walletId) {
-//        BigDecimal balance = walletRepository.findById(walletId).get().getBalance();
-//        return balance; }
      @Override
     public WalletResponse getBalance(Long walletId) throws WalletNotFoundException {
         return mapper.map(findWalletBy(walletId), WalletResponse.class);

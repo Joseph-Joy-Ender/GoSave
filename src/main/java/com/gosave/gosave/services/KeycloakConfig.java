@@ -1,43 +1,48 @@
 package com.gosave.gosave.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@Slf4j
 public class KeycloakConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(KeycloakConfig.class);
-//    @Value("${keycloak.auth.username}")
+    @Value("${keycloak.auth.username}")
     private String keycloakUsername;
-//    @Value("${keycloak.auth.password}")
+    @Value("${keycloak.auth.password}")
     private String keycloakPassword;
-//    @Value("${realm}")
+    @Value("${keycloak-realm}")
     private String keycloakRealm;
-//    @Value("${keycloak.clientId}")
+    @Value("${keycloak.clientId}")
     private String keycloakClientId;
+    @Value("${keycloak.credentials.secret}")
     private String keycloakClientSecret;
+    @Value("${keycloak.grant_type}")
     private String grant_type;
+    @Value("${keycloak.server.url}")
+    private String serverUrl;
 
     @Bean
     public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
         return new KeycloakSpringBootConfigResolver();
     }
+
     @Bean
     public Keycloak keycloak() {
         log.info("........ working, creating keycloak bean -----+++++++");
         return KeycloakBuilder.builder()
-                .serverUrl("http://localhost:8080")
-                .realm("wallet")
-                .clientId("wallet-rest-api")
-                .grantType("password")
-                .username("admin")
-                .password("admin")
+                .serverUrl(serverUrl)
+                .realm(keycloakRealm)
+                .grantType(grant_type)
+                .clientId(keycloakClientId)
+                .clientSecret(keycloakClientSecret)
+                .username(keycloakUsername)
+                .password(keycloakPassword)
                 .build();
     }
 }

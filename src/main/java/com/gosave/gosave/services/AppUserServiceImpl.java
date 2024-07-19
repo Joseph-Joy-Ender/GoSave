@@ -1,6 +1,4 @@
-
 package com.gosave.gosave.services;
-
 
 import com.gosave.gosave.config.BeanConfig;
 import com.gosave.gosave.data.model.Duration;
@@ -11,29 +9,18 @@ import com.gosave.gosave.dto.response.SaveResponse;
 import com.gosave.gosave.exception.UserException;
 import com.gosave.gosave.exception.UserNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import com.gosave.gosave.data.model.Wallet;
 
-import com.gosave.gosave.data.repositories.WalletRepository;
-import com.gosave.gosave.dto.request.WalletRequest;
-
 import com.gosave.gosave.data.repositories.UserRepository;
 
+import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletExistException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-
-
-import java.math.BigDecimal;
- 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,7 +32,9 @@ public class AppUserServiceImpl implements AppUserService {
     private final WalletService walletService;
     private final UserRepository userRepository;
     private final BeanConfig beanConfig;
-    private final PaymentServiceImpl paymentServiceImpl;
+    private final ModelMapper mapper = new ModelMapper();
+//    private PasswordEncoder passwordEncoder;
+
 
 
     @Override
@@ -71,9 +60,6 @@ public class AppUserServiceImpl implements AppUserService {
         return saveResponse;
     }
 
-
-
-
     public SaveResponse withdrawFromAccount(SaveRequest saveRequest) throws UserException, WalletExistException, UserNotFoundException {
          ModelMapper mapper = new ModelMapper();
         SaveResponse saveResponse = new SaveResponse();
@@ -92,8 +78,6 @@ public class AppUserServiceImpl implements AppUserService {
             saveResponse.setMessage("Hello your savings have been made");
         }
 
-
-        saveResponse.setMessage("");
         return saveResponse;
     }
 
@@ -133,20 +117,22 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
 
-    public User getCurrentUser(String request) throws UserException {
-        ModelMapper mapper = new ModelMapper();
-        User user = mapper.map(request,User.class);
-        User  foundUser = userRepository.findByUsername(user.getUsername()) ;
-        if (foundUser == null){
-            throw  new UserException("User not found");
-        }
-        return user;
+    @Override
+    public Optional<User> findUser(Long id) {
+        return userRepository.findById(id);
     }
 
 
+//    @Override
+//    public AccountResponse createAccount(CreateAccountRequest accountRequest) throws UserException {
+//        if (userRepository.existsByEmail(accountRequest.getEmail())) throw new UserException(GenerateApiResponse.ACCOUNT_WITH_THIS_EMAIL_ALREADY_EXIST);
+//        User user = mapper.map(accountRequest, User.class);
+////        user.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
+//        userRepository.save(user);
+//        return GenerateApiResponse.create(GenerateApiResponse.REGISTER_SUCCESSFUL);
+//    }
+
+
 }
-
-
-
 
 

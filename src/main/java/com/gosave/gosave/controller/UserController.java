@@ -1,23 +1,24 @@
-//package com.gosave.gosave.controller;
-//
-//import org.springframework.security.access.prepost.PreAuthorize;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//@RestController
-//@RequestMapping("api/v1/demo")
-//public class UserController {
-//
-//    @GetMapping
-//    @PreAuthorize("hasRole('client_user')")
-//    public String hello(){
-//        return "hello";
-//    }
-//
-//    @GetMapping("/hello-2")
-//    @PreAuthorize("hasRole('client_admin')")
-//    public String hello2(){
-//        return "hello Admin";
-//    }
-//}
+package com.gosave.gosave.controller;
+
+import com.gosave.gosave.dto.request.CreateAccountRequest;
+import com.gosave.gosave.dto.response.AccountResponse;
+import com.gosave.gosave.services.KeycloakService;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("api/v1/keycloakAccount")
+@AllArgsConstructor
+@Slf4j
+public class UserController {
+    private final KeycloakService keycloakService;
+
+    @PostMapping("/signUp")
+    public ResponseEntity<AccountResponse> signUp(@RequestBody CreateAccountRequest accountRequest){
+      log.info("Sign up api called .........{}",accountRequest);
+       return ResponseEntity.ok(keycloakService.createUser(accountRequest));
+    }
+
+}

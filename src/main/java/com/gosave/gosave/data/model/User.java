@@ -1,6 +1,7 @@
 package com.gosave.gosave.data.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,8 @@ public class User {
     private String password;
     private String email;
     private BigDecimal amount;
+    private String firstName;
+    private String lastName;
 
     @OneToOne
     private Wallet wallet;

@@ -1,11 +1,9 @@
 package com.gosave.gosave.services;
 
-
 import com.gosave.gosave.config.BeanConfig;
 import com.gosave.gosave.data.model.Duration;
 import com.gosave.gosave.data.model.User;
 import com.gosave.gosave.dto.request.SaveRequest;
-import com.gosave.gosave.dto.response.AccountResponse;
 import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.SaveResponse;
 import com.gosave.gosave.exception.UserException;
@@ -15,12 +13,10 @@ import org.springframework.stereotype.Service;
 import com.gosave.gosave.data.model.Wallet;
 
 import com.gosave.gosave.data.repositories.UserRepository;
-import com.gosave.gosave.dto.request.CreateAccountRequest;
 
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletExistException;
-import com.gosave.gosave.utils.GenerateApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;

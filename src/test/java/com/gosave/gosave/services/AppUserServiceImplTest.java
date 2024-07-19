@@ -1,6 +1,4 @@
 package com.gosave.gosave.services;
-
-import com.gosave.gosave.dto.request.CreateAccountRequest;
 import com.gosave.gosave.data.model.Duration;
 import com.gosave.gosave.dto.request.SaveRequest;
 import com.gosave.gosave.exception.UserNotFoundException;
@@ -10,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.WalletResponse;
-import com.gosave.gosave.exception.UserException;
 import com.gosave.gosave.exception.WalletExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.test.context.jdbc.Sql;
@@ -18,7 +15,6 @@ import org.springframework.test.context.jdbc.Sql;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -30,6 +26,15 @@ public class AppUserServiceImplTest {
     private WalletService walletService;
     @Autowired
     private PaymentService paymentService;
+    @Autowired
+    private AppUserServiceImpl appUserServiceImpl;
+
+    @Test
+    public void testDurationFunctionality() {
+        Duration daily = Duration.DAILY;
+        long duration = appUserServiceImpl.fundDuration(daily);
+        System.out.println(duration);
+    }
 
 
 //    @Test

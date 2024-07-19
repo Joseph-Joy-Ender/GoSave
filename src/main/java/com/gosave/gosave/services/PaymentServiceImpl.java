@@ -1,16 +1,27 @@
+
 package com.gosave.gosave.services;
 
 import com.gosave.gosave.config.BeanConfig;
 import com.gosave.gosave.data.model.User;
+import com.gosave.gosave.data.model.Wallet;
 import com.gosave.gosave.data.repositories.UserRepository;
+import com.gosave.gosave.data.repositories.WalletRepository;
 import com.gosave.gosave.dto.request.InitializeTransactionRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.PayStackTransactionResponse;
 import com.gosave.gosave.dto.response.TransactionHistoryResponse;
 import com.gosave.gosave.exception.UserException;
+import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.UserNotFoundException;
+import com.gosave.gosave.exception.WalletNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.*;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
@@ -20,6 +31,12 @@ import java.util.Optional;
 public class PaymentServiceImpl implements PaymentService {
     private final UserRepository userRepository;
     private final BeanConfig beanConfig;
+    @Autowired
+    private final ModelMapper mapper = new ModelMapper();
+    @Autowired
+    private final WalletRepository walletRepository;
+
+
 
 
     @Override
@@ -46,6 +63,17 @@ public class PaymentServiceImpl implements PaymentService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+ beanConfig.getPaystackApiKey());
         return new HttpEntity<>(transactionRequest, headers);
+    }
+    @Override
+    public WalletResponse getBalance(Long walletId) throws WalletNotFoundException {
+        return mapper.map(findWalletBy(walletId), WalletResponse.class);
+    }
+
+    private Wallet findWalletBy(Long walletId) {
+        return walletRepository.findById(walletId)
+                .orElseThrow(() -> new WalletNotFoundException(
+                        String.format("Customer with id %d not found", walletId)));
+
     }
 
     @Override

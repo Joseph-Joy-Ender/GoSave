@@ -1,18 +1,16 @@
 package com.gosave.gosave.services;
 
+import com.gosave.gosave.config.BeanConfig;
 import com.gosave.gosave.data.model.Duration;
 import com.gosave.gosave.data.model.User;
 import com.gosave.gosave.dto.request.SaveRequest;
-import com.gosave.gosave.dto.request.UserRequest;
+import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.SaveResponse;
 import com.gosave.gosave.exception.UserException;
 import com.gosave.gosave.exception.UserNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import com.gosave.gosave.controller.BeanConfig;
 import com.gosave.gosave.data.model.Wallet;
-
-import com.gosave.gosave.data.repositories.WalletRepository;
 
 import com.gosave.gosave.data.repositories.UserRepository;
 
@@ -21,17 +19,6 @@ import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.WalletExistException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
-
-import java.math.BigDecimal;
- 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Timer;
@@ -40,12 +27,15 @@ import java.util.TimerTask;
 @Service
 @AllArgsConstructor
 @Slf4j
-
 public class AppUserServiceImpl implements AppUserService {
+    private final PaymentService paymentService;
     private final WalletService walletService;
     private final UserRepository userRepository;
     private final BeanConfig beanConfig;
-    private final PaymentServiceImpl paymentServiceImpl;
+    private final ModelMapper mapper = new ModelMapper();
+//    private PasswordEncoder passwordEncoder;
+
+
 
     @Override
     public SaveResponse save(SaveRequest saveRequest) {
@@ -56,35 +46,41 @@ public class AppUserServiceImpl implements AppUserService {
             @Override
             public void run() {
                 try {
-                    initiateTransaction(saveRequest);
+                    withdrawFromAccount(saveRequest);
                 } catch (UserException | UserNotFoundException | WalletExistException e) {
                     throw new RuntimeException(e);
                 }
             }
         };
         timer.schedule(timerTask, calculateInitialDelay(saveRequest));
-        saveResponse.setMessage("Money has been saved");
+        saveResponse.setMessage("Hello " +saveRequest.getUsername()+
+                " the amount of  "+saveRequest.getAmount()
+                + " have been added to your wallet,  your current wallet balance is   "
+                +saveRequest.getBalance());
         return saveResponse;
     }
 
-
-
-
-    public SaveResponse initiateTransaction(SaveRequest saveRequest) throws UserException, WalletExistException, UserNotFoundException {
+    public SaveResponse withdrawFromAccount(SaveRequest saveRequest) throws UserException, WalletExistException, UserNotFoundException {
+         ModelMapper mapper = new ModelMapper();
         SaveResponse saveResponse = new SaveResponse();
-        WalletRequest walletRequest = new WalletRequest();
-        User foundUser  = userRepository.findByUsername(saveRequest.getUsername());
-        Optional<Wallet> foundWallet = walletService.findWalletById(saveRequest.getWallet_id());
+        User mappedUser = mapper.map(saveRequest,User.class) ;
+        Wallet mappedWallet = mapper.map(saveRequest,Wallet.class);
+        User foundUser  = userRepository.findByUsername(mappedUser.getUsername());
+        Optional<Wallet> foundWallet = walletService.findWalletById(mappedWallet.getId());
         if (foundUser == null )    {throw new UserException("User does not exist") ;}
         if (foundWallet.isEmpty()) {throw new WalletExistException("Wallet does not exist");}
         fundDuration(saveRequest.getDuration()) ;
         calculateInitialDelay(saveRequest);
-        BigDecimal currentBalance = walletService.getCurrentBalance(walletRequest);
-      
-            saveResponse.setMessage("");
+        ApiResponse<?>  response = paymentService.transferFundsToWallet(saveRequest.getId());
+        if (response != null){
+            System.out.println(response);
+            walletService.addFundToWalletFromBank(saveRequest);
+            saveResponse.setMessage("Hello your savings have been made");
+        }
+
         return saveResponse;
     }
-    
+
     public long fundDuration(Duration duration){
         return switch (duration) {
             case DAILY -> 24L * 60 * 60 * 1000;
@@ -120,21 +116,21 @@ public class AppUserServiceImpl implements AppUserService {
         return walletResponse;
     }
 
-   
-    public User getCurrentUser(String request) throws UserException {
-        ModelMapper mapper = new ModelMapper();
-        User user = mapper.map(request,User.class);
-    User  foundUser = userRepository.findByUsername(user.getUsername()) ;
-    if (foundUser == null){
-        throw  new UserException("User not found");
+
+    @Override
+    public Optional<User> findUser(Long id) {
+        return userRepository.findById(id);
     }
-        return user;
-    }
-   
 
 
-  
-
+//    @Override
+//    public AccountResponse createAccount(CreateAccountRequest accountRequest) throws UserException {
+//        if (userRepository.existsByEmail(accountRequest.getEmail())) throw new UserException(GenerateApiResponse.ACCOUNT_WITH_THIS_EMAIL_ALREADY_EXIST);
+//        User user = mapper.map(accountRequest, User.class);
+////        user.setPassword(passwordEncoder.encode(accountRequest.getPassword()));
+//        userRepository.save(user);
+//        return GenerateApiResponse.create(GenerateApiResponse.REGISTER_SUCCESSFUL);
+//    }
 
 
 }

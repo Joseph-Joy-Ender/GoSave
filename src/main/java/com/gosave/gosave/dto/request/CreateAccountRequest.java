@@ -1,6 +1,5 @@
 package com.gosave.gosave.dto.request;
 
-import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,5 +11,6 @@ public class CreateAccountRequest {
     private String firstname;
     private String lastname;
     private String username;
+
 
 }

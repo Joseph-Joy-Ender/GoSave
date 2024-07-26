@@ -1,6 +1,7 @@
 package com.gosave.gosave.services;
 
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -20,7 +21,7 @@ public class KeycloakConfig {
     private String keycloakRealm;
     @Value("${keycloak.clientId}")
     private String keycloakClientId;
-    @Value("${keycloak.credentials.secret}")
+    @Value("${keycloak.credentials.secret-key}")
     private String keycloakClientSecret;
     @Value("${keycloak.grant_type}")
     private String grant_type;
@@ -38,11 +39,25 @@ public class KeycloakConfig {
         return KeycloakBuilder.builder()
                 .serverUrl(serverUrl)
                 .realm(keycloakRealm)
-                .grantType(grant_type)
+                .grantType(OAuth2Constants.PASSWORD)
                 .clientId(keycloakClientId)
                 .clientSecret(keycloakClientSecret)
                 .username(keycloakUsername)
                 .password(keycloakPassword)
                 .build();
+
     }
+
+//    public AccessTokenResponse accessTokenResponse() {
+//        Keycloak keycloak = KeycloakBuilder.builder()
+//                .serverUrl(serverUrl)
+//                .realm(keycloakRealm)
+//                .grantType(grant_type)
+//                .clientId(keycloakClientId)
+//                .clientSecret(keycloakClientSecret)
+//                .username(keycloakUsername)
+//                .password(keycloakPassword)
+//                .build();
+//        return keycloak.tokenManager().getAccessToken();
+//    }
 }

@@ -26,8 +26,20 @@ public class KeycloakService {
     }
 
     public AccountResponse createUser(CreateAccountRequest accountRequest) {
-//        System.out.println(keycloak.tokenManager().getAccessToken().getToken());
+//        String token = keycloak.tokenManager().getAccessToken().getToken();
         log.info("Creating account {}", accountRequest.getUsername());
+        UserRepresentation user = getUserRepresentation(accountRequest);
+
+        UsersResource usersResource = getRealmResource().users();
+        Response response = usersResource.create(user);
+        log.info("account {} created", response);
+
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setMessage("Register successful");
+        return accountResponse;
+    }
+
+    private static UserRepresentation getUserRepresentation(CreateAccountRequest accountRequest) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(accountRequest.getUsername());
         user.setEmail(accountRequest.getEmail());
@@ -36,28 +48,12 @@ public class KeycloakService {
         user.setEmailVerified(true);
         user.setEnabled(true);
 
+
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(accountRequest.getPassword());
         credential.setTemporary(false);
-
         user.setCredentials(Collections.singletonList(credential));
-
-        UsersResource usersResource = getRealmResource().users();
-
-//        try(var response = usersResource.create(user)){
-//            log.info("Created user {}", response.getEntity());
-//        }
-        Response response = usersResource.create(user);
-        log.info("account {} created", response);
-
-//        if (response.getStatus() == 201) {
-//            System.out.println("User created successfully");
-//        } else {
-//            System.out.println("Failed to create user");
-//        }
-        AccountResponse accountResponse = new AccountResponse();
-        accountResponse.setMessage("Register successful");
-        return accountResponse;
+        return user;
     }
 }

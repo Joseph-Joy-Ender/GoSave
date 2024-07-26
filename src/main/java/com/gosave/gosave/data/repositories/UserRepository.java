@@ -3,8 +3,8 @@ package com.gosave.gosave.data.repositories;
 import com.gosave.gosave.data.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+public interface UserRepository extends JpaRepository<User, Long> {
+    boolean existsByEmail(String email);
 
-public interface UserRepository extends JpaRepository <User,Long> {
- User findByUsername(String username);
-
+    User findByUsername(String username);
 }

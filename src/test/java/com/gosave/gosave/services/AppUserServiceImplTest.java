@@ -17,10 +17,9 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Slf4j
-
 @SpringBootTest
-class AppUserServiceImplTest {
+@Slf4j
+public class AppUserServiceImplTest {
     @Autowired
     private AppUserService appUserService;
     @Autowired
@@ -38,16 +37,29 @@ class AppUserServiceImplTest {
     }
 
 
+//    @Test
+//    public void testThatUserCanCreateAccount() throws UserException {
+//        CreateAccountRequest accountRequest = new CreateAccountRequest();
+//        accountRequest.setUsername("Udeme Chloe");
+//        accountRequest.setEmail("udeme5017@gmail.com");
+//        accountRequest.setPassword("udeme5017");
+//        CreateAccountResponse response = appUserService.createAccount(accountRequest);
+//        assertThat(response).isNotNull();
+//        assertThat("udeme5017@gmail.com").isEqualTo(accountRequest.getEmail());
+//    }
+//    @Test
+//    public void testThatExceptionIsThrownIfUserExist() throws UserException {
+//        CreateAccountRequest accountRequest = new CreateAccountRequest();
+//        accountRequest.setUsername("Udeme Chloe");
+//        accountRequest.setEmail("udeme5017@gmail.com");
+//        accountRequest.setPassword("udeme5017");
+//        assertThat("udeme5017@gmail.com").isEqualTo(accountRequest.getEmail());
+//        assertThatExceptionOfType(UserException.class).isThrownBy(() ->appUserService.createAccount(accountRequest));
+//    }
+
     @Test
-    public  void testInitial_Delay(){
-        SaveRequest saveRequest = new SaveRequest();
-        saveRequest.setHour(1);
-        saveRequest.setMinutes(0);
-        System.out.println(appUserServiceImpl.calculateInitialDelay(saveRequest));
-    }
-         @Test
-         @Sql("/scripts/scripts.sql")
-         public void testSave_Functionality(){
+    @Sql("/scripts/scripts.sql")
+    public void testSave_Functionality(){
           SaveRequest saveRequest = new SaveRequest();
           saveRequest.setHour(1);
           saveRequest.setMinutes(0);
@@ -68,6 +80,16 @@ class AppUserServiceImplTest {
             log.info("res-->{}", response);
             System.out.println(response.getData());
             assertThat(response).isNotNull();
+        }
+        @Test
+        public void testThatACustomerCanCreateWallet () throws WalletExistException {
+            WalletRequest walletRequest = new WalletRequest();
+            walletRequest.setId(100L);
+            walletRequest.setBalance(BigDecimal.ZERO);
+//          walletRequest.setTransaction
+            WalletResponse walletResponse = appUserService.createWallet(walletRequest);
+            assertThat(walletResponse).isNotNull();
+
         }
 
 

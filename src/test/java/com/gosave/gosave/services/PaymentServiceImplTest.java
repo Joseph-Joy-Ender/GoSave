@@ -20,7 +20,7 @@ public class PaymentServiceImplTest {
     @Test
     @Sql("/scripts/scripts.sql")
     public void testThatWalletCanReceiveMoneyFrom () throws UserNotFoundException {
-        ApiResponse<?> response = paymentService.transferFundsToWallet(201L);
+        ApiResponse<?> response = paymentService.transferFundsToWallet(101L);
         log.info("res-->{}", response);
         System.out.println(response.getData());
         assertThat(response).isNotNull();

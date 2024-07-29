@@ -27,6 +27,7 @@ public class Transaction {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String transactionType;
+    private String description;
 
     @CreatedDate
     @CreationTimestamp

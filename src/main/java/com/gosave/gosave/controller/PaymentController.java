@@ -1,5 +1,8 @@
 package com.gosave.gosave.controller;
 
+import com.gosave.gosave.data.model.User;
+import com.gosave.gosave.dto.request.InitializeTransactionRequest;
+import com.gosave.gosave.dto.request.WalletRequest;
 import com.gosave.gosave.dto.response.ApiResponse;
 import com.gosave.gosave.dto.response.WalletResponse;
 import com.gosave.gosave.exception.UserNotFoundException;
@@ -9,6 +12,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("api/v1/GoSave/")
@@ -25,6 +30,7 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(new ApiResponse<>(e.getMessage()));
         }
     }
+
 
     @GetMapping("getBalance/{walletId}")
     public HttpEntity<WalletResponse> getBalance(@PathVariable Long walletId) {

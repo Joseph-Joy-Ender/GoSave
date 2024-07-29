@@ -64,6 +64,9 @@ public class PaymentServiceImpl implements PaymentService {
         headers.set(HttpHeaders.AUTHORIZATION, "Bearer "+ beanConfig.getPaystackApiKey());
         return new HttpEntity<>(transactionRequest, headers);
     }
+
+
+
     @Override
     public WalletResponse getBalance(Long walletId) throws WalletNotFoundException {
         return mapper.map(findWalletBy(walletId), WalletResponse.class);

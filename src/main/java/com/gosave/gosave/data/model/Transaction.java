@@ -34,7 +34,6 @@ public class Transaction {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate transactionDate;
 
-    private BigDecimal transactionAmount;
     private String transactionDescription;
 
     @ManyToOne
